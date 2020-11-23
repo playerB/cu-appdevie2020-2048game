@@ -22,16 +22,22 @@ namespace _2048game
         public Form1()
         {
             InitializeComponent();
+            StreamReader srhigh = new StreamReader("save\\highscore.txt");
+            highsc = Convert.ToInt32(srhigh.ReadLine());
+            srhigh.Close();
         }
 
         Random rd = new Random();
         int score = 0;
+        int highsc;
         int row = 4;
-        int[,] board = new int[8, 8];
+        int[,] board = new int[10, 10];
         int dragx = 0, dragy = 0;
         string direction = "";
         int newsqx = 0, newsqy = 0;
         bool isGameOver = false;
+        Pen border_pen = new Pen(Color.FromArgb(127, 140, 141), 4.0f);
+
 
         Bitmap t2 = new Bitmap("assets\\" + "tile2.png");
         Bitmap t4 = new Bitmap("assets\\" + "tile4.png");
@@ -44,60 +50,36 @@ namespace _2048game
         Bitmap t512 = new Bitmap("assets\\" + "tile512.png");
         Bitmap t1024 = new Bitmap("assets\\" + "tile1024.png");
         Bitmap t2048 = new Bitmap("assets\\" + "tile2048.png");
-
+        Bitmap t4096 = new Bitmap("assets\\" + "tile4096.png");
+        Bitmap t8192 = new Bitmap("assets\\" + "tile8192.png");
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            swipe(direction);
             genTile();
-            scorelabel.Text = score.ToString();
+            checkscore();
             Graphics g = e.Graphics;
             int width = pictureBox1.Width / row;
             int height = pictureBox1.Height / row;
-            Pen border_pen = new Pen(Color.FromArgb(127, 140, 141), 4.0f);
 
             for (int i = 0; i < row; i++)
                 for (int j = 0; j < row; j++)
                 {
-                    
                     switch (board[i, j])
                     {
-                        case 2:
-                            g.DrawImage(t2, width * i, height * j, width, height);
-                            break;
-                        case 4:
-                            g.DrawImage(t4, width * i, height * j, width, height);
-                            break;
-                        case 8:
-                            g.DrawImage(t8, width * i, height * j, width, height);
-                            break;
-                        case 16:
-                            g.DrawImage(t16, width * i, height * j, width, height);
-                            break;
-                        case 32:
-                            g.DrawImage(t32, width * i, height * j, width, height);
-                            break;
-                        case 64:
-                            g.DrawImage(t64, width * i, height * j, width, height);
-                            break;
-                        case 128:
-                            g.DrawImage(t128, width * i, height * j, width, height);
-                            break;
-                        case 256:
-                            g.DrawImage(t256, width * i, height * j, width, height);
-                            break;
-                        case 512:
-                            g.DrawImage(t512, width * i, height * j, width, height);
-                            break;
-                        case 1024:
-                            g.DrawImage(t1024, width * i, height * j, width, height);
-                            break;
-                        case 2048:
-                            g.DrawImage(t2048, width * i, height * j, width, height);
-                            break;
-                        default:
-                            g.FillRectangle(Brushes.LightGray, width * i, height * j, width, height);
-                            break;
+                        case 2: g.DrawImage(t2, width * i, height * j, width, height); break;
+                        case 4: g.DrawImage(t4, width * i, height * j, width, height); break;
+                        case 8: g.DrawImage(t8, width * i, height * j, width, height); break;
+                        case 16: g.DrawImage(t16, width * i, height * j, width, height); break;
+                        case 32: g.DrawImage(t32, width * i, height * j, width, height); break;
+                        case 64: g.DrawImage(t64, width * i, height * j, width, height); break;
+                        case 128: g.DrawImage(t128, width * i, height * j, width, height); break;
+                        case 256: g.DrawImage(t256, width * i, height * j, width, height); break;
+                        case 512: g.DrawImage(t512, width * i, height * j, width, height); break;
+                        case 1024: g.DrawImage(t1024, width * i, height * j, width, height); break;
+                        case 2048: g.DrawImage(t2048, width * i, height * j, width, height); break;
+                        case 4096: g.DrawImage(t4096, width * i, height * j, width, height); break;
+                        case 8192: g.DrawImage(t8192, width * i, height * j, width, height); break;
+                        default: g.FillRectangle(Brushes.LightGray, width * i, height * j, width, height); break;
                     }
                 }
             for (int k = 0; k < row; k++)
@@ -105,7 +87,7 @@ namespace _2048game
                 g.DrawLine(border_pen, 0, height * k, pictureBox1.Width, height * k);
                 g.DrawLine(border_pen, width * k, 0, width * k, pictureBox1.Height);
             }
-            g.DrawRectangle(Pens.Aqua, newsqx * width, newsqy * height, width, height);
+            g.DrawRectangle(Pens.Yellow, newsqx * width, newsqy * height, width, height);
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -116,7 +98,7 @@ namespace _2048game
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            if (dragx > e.X && Math.Abs(dragx-e.X) > Math.Abs(dragy - e.Y))
+            if (dragx > e.X && Math.Abs(dragx - e.X) > Math.Abs(dragy - e.Y))
             {
                 direction = "left";
             }
@@ -136,12 +118,74 @@ namespace _2048game
             {
                 direction = null;
             }
+            swipe(direction);
             Refresh();
         }
 
-        void leftswipe(int row)
+        private void retrylabel_Click(object sender, EventArgs e)
         {
-            for(int t = 0; t < row; t++)
+            isGameOver = false;
+            score = 0;
+            board = new int[4, 4];
+            dragx = 0;
+            dragy = 0;
+            direction = "";
+            newsqx = 0;
+            newsqy = 0;
+            retrylabel.Visible = false;
+            gameoverlabel.Visible = false;
+            Refresh();
+        }
+
+        private void savebutton_Click(object sender, EventArgs e)
+        {
+            if (isGameOver) return;
+            StreamWriter sw = new StreamWriter("save\\savegame.txt");
+            for (int j = 0; j < row; j++)
+            {
+                for (int i = 0; i < row; i++)
+                {
+                    sw.Write(board[i, j].ToString() + ',');
+                }
+                sw.WriteLine("");
+            }
+            sw.Close();
+        }
+
+        private void loadbutton_Click(object sender, EventArgs e)
+        {
+            if (isGameOver) return;
+            StreamReader sr = new StreamReader("save\\savegame.txt");
+            string line = "";
+            string[] tile;
+            int j = 0;
+            board = new int[10, 10];
+            while ((line = sr.ReadLine()) != null)
+            {
+                tile = line.Split(',');
+                for (int i = 0; i < tile.Length - 1; i++)
+                {
+                    board[i, j] = Convert.ToInt32(tile[i]);
+                }
+                j++;
+            }
+            sr.Close();
+            Refresh();
+        }
+
+        void checkscore()
+        {
+            if (score > highsc)
+            {
+                highsc = score;
+            }
+            scorelabel.Text = score.ToString();
+            hscorelabel.Text = highsc.ToString();
+        }
+
+        private void leftswipe(int row)
+        {
+            for (int t = 0; t < row; t++)
             {
                 for (int j = 0; j < row; j++)
                     for (int i = row - 2; i >= 0; i--)
@@ -168,7 +212,7 @@ namespace _2048game
             }
         }
 
-        void rightswipe(int row)
+        private void rightswipe(int row)
         {
             for (int t = 0; t < row; t++)
             {
@@ -197,7 +241,7 @@ namespace _2048game
             }
         }
 
-        void upswipe(int row)
+        private void upswipe(int row)
         {
             for (int t = 0; t < row; t++)
             {
@@ -226,7 +270,7 @@ namespace _2048game
             }
         }
 
-        void downswipe(int row)
+        private void downswipe(int row)
         {
             for (int t = 0; t < row; t++)
             {
@@ -255,36 +299,7 @@ namespace _2048game
             }
         }
 
-        private void retrylabel_Click(object sender, EventArgs e)
-        {
-            isGameOver = false;
-            score = 0;
-            board = new int[4, 4];
-            dragx = 0;
-            dragy = 0;
-            direction = "";
-            newsqx = 0;
-            newsqy = 0;
-            retrylabel.Visible = false;
-            gameoverlabel.Visible = false;
-            Refresh();
-        }
-
-        private void savebutton_Click(object sender, EventArgs e)
-        {
-            StreamWriter sw = new StreamWriter("save\\savegame1.txt");
-            for (int j = 0; j < row; j++)
-            {
-                for (int i = 0; i < row; i++)
-                {
-                    sw.Write(board[i, j].ToString() + ',');
-                }
-                sw.WriteLine("");
-            }
-            sw.Close();
-        }
-
-        public void swipe(string d)
+        private void swipe(string d)
         {
             if (d == null || isGameOver) return;
             switch (d)
@@ -306,8 +321,9 @@ namespace _2048game
             }
         }
 
-        public void genTile()
+        private void genTile()
         {
+
             if (direction == null) return;
             bool isFull = true;
             for (int i = 0; i < row; i++)
@@ -317,9 +333,7 @@ namespace _2048game
                 }
             if (isFull)
             {
-                isGameOver = true;
-                retrylabel.Visible = true;
-                gameoverlabel.Visible = true;
+                gameOver();
                 return;
             }
 
@@ -328,7 +342,7 @@ namespace _2048game
             {
                 int sqx = rd.Next(row);
                 int sqy = rd.Next(row);
-                if(board[sqx,sqy] == 0)
+                if (board[sqx, sqy] == 0)
                 {
                     board[sqx, sqy] = 2;
                     isPlaced = true;
@@ -336,6 +350,16 @@ namespace _2048game
                     newsqy = sqy;
                 }
             } while (!isPlaced);
+        }
+
+        private void gameOver()
+        {
+            isGameOver = true;
+            retrylabel.Visible = true;
+            gameoverlabel.Visible = true;
+            StreamWriter swhigh = new StreamWriter("save\\highscore.txt");
+            swhigh.WriteLine(highsc);
+            swhigh.Close();
         }
     }
 }

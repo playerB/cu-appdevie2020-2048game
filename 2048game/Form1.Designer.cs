@@ -139,7 +139,7 @@
             this.logolabel.BackColor = System.Drawing.Color.Gold;
             this.logolabel.Font = new System.Drawing.Font("Microsoft Tai Le", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.logolabel.ForeColor = System.Drawing.Color.White;
-            this.logolabel.Location = new System.Drawing.Point(84, 43);
+            this.logolabel.Location = new System.Drawing.Point(100, 53);
             this.logolabel.Name = "logolabel";
             this.logolabel.Size = new System.Drawing.Size(114, 51);
             this.logolabel.TabIndex = 4;

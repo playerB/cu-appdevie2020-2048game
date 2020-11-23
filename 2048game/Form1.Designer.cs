@@ -38,9 +38,9 @@
             this.logolabel = new System.Windows.Forms.Label();
             this.backlogo = new System.Windows.Forms.PictureBox();
             this.savebutton = new System.Windows.Forms.Button();
-            this.loadbutton = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.loadbutton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.backlogo)).BeginInit();
             this.SuspendLayout();
@@ -167,6 +167,10 @@
             this.savebutton.UseVisualStyleBackColor = false;
             this.savebutton.Click += new System.EventHandler(this.savebutton_Click);
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // loadbutton
             // 
             this.loadbutton.BackColor = System.Drawing.Color.SandyBrown;
@@ -179,10 +183,6 @@
             this.loadbutton.Text = "load";
             this.loadbutton.UseVisualStyleBackColor = false;
             this.loadbutton.Click += new System.EventHandler(this.loadbutton_Click);
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // Form1
             // 
@@ -222,9 +222,9 @@
         private System.Windows.Forms.Label logolabel;
         private System.Windows.Forms.PictureBox backlogo;
         private System.Windows.Forms.Button savebutton;
-        private System.Windows.Forms.Button loadbutton;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button loadbutton;
     }
 }
 

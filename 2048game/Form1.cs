@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 /*
-2048 GAME
+2048 GAME v1.1
 Supawish Kanokpongsakorn 6230525521 CUIE103
 APP DEV FOR IE 2020
  */
